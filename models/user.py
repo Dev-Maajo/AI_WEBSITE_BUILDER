@@ -5,6 +5,51 @@ from functools import wraps
 
 user_bp = Blueprint('user', __name__)
 
+# Add this to models/user.py (at the top)
+
+class User:
+    def __init__(self, id, username, email, role):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.role = role
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'role': self.role
+        }
+
+    @staticmethod
+    def find_by_id(user_id):
+        cursor = db.cursor()
+        result = cursor.execute("SELECT id, username, email, role FROM users WHERE id = ?", (user_id,))
+        row = result.fetchone()
+        return User(*row) if row else None
+
+    @staticmethod
+    def find_by_email(email):
+        cursor = db.cursor()
+        result = cursor.execute("SELECT id, username, email, role FROM users WHERE email = ?", (email,))
+        row = result.fetchone()
+        return User(*row) if row else None
+
+    @staticmethod
+    def find_all():
+        cursor = db.cursor()
+        result = cursor.execute("SELECT id, username, email, role FROM users")
+        rows = result.fetchall()
+        return [User(*row) for row in rows]
+
+    def save(self):
+        cursor = db.cursor()
+        cursor.execute("UPDATE users SET username = ?, email = ?, role = ? WHERE id = ?", 
+                       (self.username, self.email, self.role, self.id))
+        db.commit()
+
+
 def admin_required(f):
     """Decorator to require admin role"""
     @wraps(f)
