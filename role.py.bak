@@ -1,5 +1,5 @@
 from datetime import datetime
-from models.database import db
+from src.models.database import db
 import json
 
 class Role:
