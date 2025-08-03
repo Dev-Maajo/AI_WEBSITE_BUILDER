@@ -9,15 +9,15 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 
 # Import models to initialize database connection
-from models.database import db
-from models.role import Role
+from src.models.database import db
+from src.models.role import Role
 
 # Import routes
-from routes.auth import auth_bp
-from routes.website import website_bp
-from routes.role import role_bp
-from routes.ai import ai_bp
-from routes.user import user_bp
+from src.routes.auth import auth_bp
+from src.routes.website import website_bp
+from src.routes.role import role_bp
+from src.routes.ai import ai_bp
+from src.routes.user import user_bp
 
 # Load environment variables
 load_dotenv()
@@ -62,7 +62,7 @@ def serve(path):
 @app.route('/preview/<website_id>')
 def preview_website(website_id):
     """Route for live preview of websites"""
-    from models.website import Website
+    from src.models.website import Website
     from flask import render_template_string
     
     website = Website.find_by_id(website_id)
